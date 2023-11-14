@@ -546,6 +546,7 @@ public class Board {
         }
 
          */
-    // other methods if needed...
+// other methods if needed ...
     }
 }
+

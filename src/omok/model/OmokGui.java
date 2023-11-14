@@ -1,13 +1,12 @@
+//Andre Salamanca and Miguel Angel Garcia Jacquez
 package omok.model;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
-public class Omok extends JFrame {
+public class OmokGui extends JFrame {
     private List<Integer> xCoordinates;
 
     private List<Integer> yCoordinates;
@@ -36,13 +35,9 @@ public class Omok extends JFrame {
     private boolean gameIsRunning;
 
 
-    public Omok() {
+    public OmokGui() {
         super("Omok");
-        // sample UI
-        //var panel = new JPanel();
-        //panel.setLayout(new BorderLayout());
-        omok = new Board();//This line should be repainted
-        //var gameBoard = new BoardPanel(omok);
+        omok = new Board();
         p1 = new Player("Mike", true);
         p2 = new Player("Andre", true);
         p1=omok.getPlayers()[0];
@@ -62,10 +57,11 @@ public class Omok extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-
+        //show game start screen
         GameStartScreen();
 
     }
+    //showcases games start screen menu
     public void GameStartScreen() {
         setJMenuBar(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,82 +73,67 @@ public class Omok extends JFrame {
         setVisible(true);
         panel.add(new JLabel("Select opponent: "));
 
-        //JRadioButton humanButton = new JRadioButton("Human");
-        //JRadioButton computerButton = new JRadioButton("Computer");
 
-        //ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(humanButton);
         buttonGroup.add(computerButton);
 
-        //var playbutton = new JButton("play");
+
 
         panel.add(humanButton);
         panel.add(computerButton);
         panel.add(playbutton);
         addGameBoardActionListener(gameBoard);
-
+        //play button action listener
         playbutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //if human button is selected, set players to human
                 if (humanButton.isSelected()) {
                     isHuman=true;
                     p1.setIsHuman(true);
                     p2.setIsHuman(true);
-                    /*
-                    playbutton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            //Play button selected
-                            setPreferredSize(new Dimension(700, 700)); // Set the preferred size to 700x700 because it wasn't update it after calling the method
-                            revalidate(); // Refresh the frame
-                            pack(); // Show in the middle of the screen
-                            JMenuBar();
-                            Game();
 
-
-                        }
-                    });
-
-                     */
                     addPlayButtonActionListener();
 
                 }
+                //if computer button is selected set players to human and nonhuman
                 else if (computerButton.isSelected()) {
                     isHuman=false;
                     p1.setIsHuman(true);
                     p2.setIsHuman(false);
                     addPlayButtonActionListener();
-                    //
-                } else {
-                    //
+
                 }
             }
         });
 
 
     }
+    //showcases game screen
     private void Game() {
-        //gameBoard = new BoardPanel(omok);
+
         xCoordinates = gameBoard.getXcoordinates();
         yCoordinates = gameBoard.getYcoordinates();
         xCoordinatesRange = gameBoard.getxCoordinatesRange();
         yCoordinatesRange = gameBoard.getyCoordinatesRange();
 
-        //setPreferredSize(new Dimension(700, 700)); // Set the preferred size
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        frame.setContentPane(mainPanel); // Set the content pane for the frame
+        // Set the content pane for the frame
+        frame.setContentPane(mainPanel);
+        //add game board to main panel
         mainPanel.add(gameBoard, BorderLayout.CENTER);
         setLocationRelativeTo(null);
         pack();
         setVisible(true);
+        //turn on game board action listener
         addGameBoardActionListener(gameBoard);
+        //display main panel
         setContentPane(mainPanel);
         gameIsRunning=true;
 
 
     }
+    //create menu bar
     private void JMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu customMenu = new JMenu("Game Menu");
@@ -164,7 +145,7 @@ public class Omok extends JFrame {
         int desiredWidth = 15;  // Adjust the size of the icon
         int desiredHeight = 15;
 
-       Icon restartIcon = new ImageIcon(Omok.class.getResource("restartIcon.png"));
+        Icon restartIcon = new ImageIcon(OmokGui.class.getResource("restartIcon.png"));
         Image originalImageR = ((ImageIcon) restartIcon).getImage();
         // Scale the image to the desired size
         Image scaledImage = originalImageR.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
@@ -172,7 +153,7 @@ public class Omok extends JFrame {
         Icon resizedRestartIcon = new ImageIcon(scaledImage);
 
         // Assuming desiredWidth and desiredHeight are defined earlier in your code
-        Icon stopIcon = new ImageIcon(Omok.class.getResource("stopIcon.png"));
+        Icon stopIcon = new ImageIcon(OmokGui.class.getResource("stopIcon.png"));
         Image originalImageStop = ((ImageIcon) stopIcon).getImage();
         // Scale the image to the desired size
         Image scaledImageStop = originalImageStop.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
@@ -180,7 +161,7 @@ public class Omok extends JFrame {
         Icon resizedStopIcon = new ImageIcon(scaledImageStop);
         // Assuming desiredWidth and desiredHeight are defined earlier in your code
 
-        Icon resignIcon = new ImageIcon(Omok.class.getResource("resignIcon.png"));
+        Icon resignIcon = new ImageIcon(OmokGui.class.getResource("resignIcon.png"));
         Image originalImageResign = ((ImageIcon) resignIcon).getImage();
         // Scale the image to the desired size
         Image scaledImageResign = originalImageResign.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH);
@@ -207,41 +188,49 @@ public class Omok extends JFrame {
         setLocationRelativeTo(null);
         pack();
         setVisible(true);
-
+        //if restart game button is clicked, show confirm dialog
         restartGameButton.addActionListener(e -> {
             showConfirmationDialog();
 
         });
+        //if stop game button is clicked, show confirm dialog
         stopGameButton.addActionListener(e -> {
+            //clear board
             omok.clear();
+            //revert to game start screen menu
             GameStartScreen();
+            //reset player turns
             currentPlayer=p1;
             addGameBoardActionListener(gameBoard);
+
             gameBoard.setGameOver(false);
             gameIsRunning=false;
 
         });
+        //if resign game button is clicked, show confirm dialog
         resignGameButton.addActionListener(e -> {
-            //omok.switchTurns();
+            //switch turns and let other player win
             omok.switchTurns();
             gameBoard.setGameOver(true);
+            //remove game board action listener
             removeGameBoardActionListener(gameBoard);
+            //repaint board
             gameBoard.repaint();
             gameIsRunning=false;
 
 
 
         });
-
+        //create new toolbar
         JToolBar toolBar = new JToolBar();
 
-        // Create buttons for the toolbar
+        //Create buttons for the toolbar
         JButton button1 = new JButton("Info");
 
 
-        // Add action listeners to the buttons
+        //Add action listeners to the buttons
         button1.addActionListener(e -> {
-            // Display an information message when button1 is clicked
+            //Display an information message when button1 is clicked
             String message = "Welcome to the Omok Game!\n The player who achieves five stones in a row wins.";
             String title = "Omok Game Info";
             JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
@@ -251,6 +240,7 @@ public class Omok extends JFrame {
         // Add the toolbar to the main panel
         mainPanel.add(toolBar, BorderLayout.SOUTH);
     }
+    //confirm dialog
     private void showConfirmationDialog() {
         int option = JOptionPane.showConfirmDialog(
                 this,
@@ -260,8 +250,11 @@ public class Omok extends JFrame {
 
         if (option == JOptionPane.YES_OPTION) {
             // User clicked Yes-->
+            //clear board
             omok.clear();
+            //repaint boardpanel
             gameBoard.repaint();
+            //reset turns
             currentPlayer = p1;
             omok.setCurrentPlayer(p1);
             isPlayer1Turn = true;
@@ -270,74 +263,63 @@ public class Omok extends JFrame {
             gameIsRunning=true;
         }
     }
-
+    //board panel action listener
     public void addGameBoardActionListener(BoardPanel gameBoard){
 
         gameBoard.addMouseListener(new java.awt.event.MouseAdapter(){
 
 
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                /*
-                if (evt.getX() == 0 && evt.getY() == 0) {
-                    Graphics g = gameBoard.getGraphics();
-                    g.setColor(Color.BLACK);
-                    g.fillOval(95, 95, 10, 10); // Draw a small circle at (100, 100)
-                }
 
-                 */
 
                 Graphics g = gameBoard.getGraphics();
 
+                //get coordinate range of intersections on board
                 xCoordinates=gameBoard.getXcoordinates();
                 yCoordinates=gameBoard.getYcoordinates();
-                //System.out.println(evt.getX());
-                //System.out.println(xCoordinates);
-                //System.out.println(yCoordinates);
+
                 xCoordinatesRange=gameBoard.getxCoordinatesRange();
                 yCoordinatesRange=gameBoard.getyCoordinatesRange();
 
+                //if mouse was clicked within range of intersections
                 if (xCoordinates.contains(evt.getX()) && yCoordinates.contains(evt.getY())) {
-                    //System.out.println(xCoordinates);
-                    //System.out.println(yCoordinates);
 
                     omok=getBoard();
 
+                    //get the corresponding coordinates on board
                     int x =gameBoard.getXcoordinatesOnPanel().get(xCoordinatesRange.get(evt.getX()));
                     int y=gameBoard.getYcoordinatesOnPanel().get(yCoordinatesRange.get(evt.getY()));
-                    System.out.println(gameBoard.getXcoordinatesOnPanel());
-                    System.out.println(xCoordinatesRange.get(evt.getX()));
-                    System.out.println(x);
-                    System.out.println(y);
-
-
-
-
-                    //================
 
                     currentPlayer=omok.getCurrentPlayer();
 
-
+                    //if intersection is empty and not occupied
                     if(omok.isEmpty(x,y)&&!omok.isOccupied(x,y)){
+                        //place stone on board
                         omok.placeStone(x,y,currentPlayer);
+                        //if game is won after stone placed, remove gameboard action listener making it unclickable
                         if(omok.isWonBy(p1)||omok.isWonBy(p2)){
                             removeGameBoardActionListener(gameBoard);
                             gameBoard.paintComponent(g);
                             gameIsRunning=false;
 
                         }
+                        //if game isnt over, switch turns
                         else{
                             omok.switchTurns();
                             gameBoard.paintComponent(g);
                         }
-
+                        //if the opponent is a computer
                         currentPlayer=omok.getCurrentPlayer();
                         if(gameIsRunning&&!currentPlayer.isHuman()){
+                            //automate computers game move
                             currentPlayer.automateMove(omok);
+                            //if computer won, remove game board action listener making it unclickable
                             if(omok.isWonBy(p1)||omok.isWonBy(p2)){
                                 removeGameBoardActionListener(gameBoard);
                                 gameBoard.paintComponent(g);
                                 gameIsRunning=false;
                             }
+                            //switch turns
                             else{
                                 omok.switchTurns();
                                 gameBoard.paintComponent(g);
@@ -348,50 +330,20 @@ public class Omok extends JFrame {
                     }
 
 
-                    //gameBoard.paintComponent(g);
 
-
-
-
-
-
-/*
-                    //print players turn
-                    g.setColor(Color.BLACK);
-                    p1=omok.getPlayers()[0];
-                    p2=omok.getPlayers()[1];
-                    currentPlayer=omok.getPlayers()[2];
-                    if(currentPlayer==p1){
-                        g.drawString("Player 1's Turn",50,50);
-                    }
-                    else{
-                        g.drawString("Player 2's Turn",50,50);
-                    }
-
- */
-
-
-
-
-
-                    //g.fillOval(xCoordinatesRange.get(evt.getX())-15, yCoordinatesRange.get(evt.getY())-15, 30, 30); // Draw a small circle at (100, 100)
                 }
 
 
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                if (evt.getX() == 75 && evt.getY() == 65) {
-                    Graphics g = gameBoard.getGraphics();
-                    g.setColor(gameBoard.getBackground());
-                    g.fillOval(95, 95, 10, 10); // Erase the circle at (100, 100)
-                }
-            }
+
         });
     }
+    //makes game board unclickable, used when player wins game
     public void removeGameBoardActionListener(BoardPanel gameBoard){
         gameBoard.removeMouseListener(gameBoard.getMouseListeners()[0]);
 
     }
+    //adds play button action listener
     public void addPlayButtonActionListener(){
         playbutton.addActionListener(new ActionListener() {
             @Override
@@ -408,17 +360,13 @@ public class Omok extends JFrame {
             }
         });
     }
+    //checks for win and makes board unclickable
     public void checkForWin(){
         if(omok.isWonBy(p1)||omok.isWonBy(p2)){
             removeGameBoardActionListener(gameBoard);
 
-
-
         }
     }
-
-
-
 
 
     public Board getBoard(){
